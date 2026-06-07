@@ -8,7 +8,7 @@ import { PublicRoute } from './PublicRoute'
 export function AppRoutes() {
     return (
         <Routes>
-        <Route path='/login'    element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path='/login' element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route path='/register' element={<PublicRoute><RegisterPage /></PublicRoute>} />
         <Route path='/dashboard' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path='*' element={<Navigate to='/login' replace />} />

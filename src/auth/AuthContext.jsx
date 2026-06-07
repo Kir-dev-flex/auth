@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { setAccessToken, clearAccessToken } from './tokenStore'
+import { setAccessToken, clearAccessToken, setOnUnauthorized } from './tokenStore'
 import { useQueryClient } from "@tanstack/react-query";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -26,7 +26,7 @@ export function AuthProvider({children}) { // делаем контекст, г�
     }
 
     useEffect(() => {
-  // сюда вписать вызов silent refresh на /refresh. на reqres.in эндпоинта нет, поэтому заглушка
+        setOnUnauthorized(logout)
 }, [])
 
     return (

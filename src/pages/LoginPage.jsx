@@ -3,6 +3,7 @@ import { validateEmail } from "../validation/email";
 import { validatePassword } from "../validation/password";
 import { useState } from 'react'
 import { Link } from "react-router-dom";
+import { PasswordInput } from '../components/PasswordInput'
 
 export function LoginPage() {
     const mutation = useLogin()
@@ -53,14 +54,13 @@ export function LoginPage() {
 
         <label style={{ display: 'flex', gap: '20px', flexDirection: 'column'}}>
             Пароль
-            <input
-            type='password'
-            value={password}
-            onChange={(e) => {
+            <PasswordInput
+                value={password}
+                onChange={(e) => {
                 setPassword(e.target.value)
                 setErrors((prev) => ({ ...prev, password: '' }))
-            }}
-            style={{ borderColor: errors.password ? 'red' : '' }}
+                }}
+                hasError={!!errors.password}
             />
             {errors.password && <div style={{ color: 'red' }}>{errors.password}</div>}
         </label>

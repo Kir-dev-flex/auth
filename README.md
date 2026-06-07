@@ -1,16 +1,46 @@
-# React + Vite
+# Auth — учебный проект
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Авторизация и регистрация пользователя на React + Vite + TanStack Query.
 
-Currently, two official plugins are available:
+## Запуск
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+### Переменные окружения
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Создать `.env` в корне:
 
-## Expanding the ESLint configuration
+```
+VITE_REQRES_KEY=твой_ключ_с_app.reqres.in
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Тестовый аккаунт reqres: `eve.holt@reqres.in` / `cityslicka`.
+
+## Стек
+
+- React 18 + Vite 5
+- TanStack Query v5
+- axios
+- React Router v6
+- Бэкенд — reqres.in
+
+## Что реализовано
+
+Обязательная часть: API-слой с interceptors, AuthContext с хранением токена в памяти, формы с валидацией, ProtectedRoute / PublicRoute, Dashboard.
+
+Бонусы: показать/скрыть пароль, индикатор надёжности пароля.
+
+## Хранение токена
+
+Access token хранится **только в памяти** (module-level переменная в `auth/tokenStore.js`). Не в `localStorage` — это требование ТЗ для защиты от XSS.
+
+## Silent refresh — заглушка
+
+В `AuthContext.jsx` в `useEffect` оставлено место под паттерн silent refresh: при старте приложения фронт делает запрос на `/refresh`, браузер автоматически прикладывает httpOnly-куку, сервер возвращает новый access token. Если кука протухла — редирект на `/login`. reqres.in не предоставляет refresh-эндпоинт, поэтому реализована только архитектура (TODO-комментарий).
+
+## Связь interceptor → AuthContext
+
+Response interceptor живёт вне React-дерева и не может вызвать `useAuth()` напрямую. Связь через callback в `tokenStore`: `AuthProvider` регистрирует свою функцию `logout` через `setOnUnauthorized`, interceptor при 401 дёргает `triggerUnauthorized`. Это синхронизирует токен и React-state.

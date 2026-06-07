@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { clearAccessToken, getAccessToken } from '../auth/tokenStore'
+import { clearAccessToken, getAccessToken, triggerUnauthorized } from '../auth/tokenStore'
 
 const api = axios.create({
     baseURL: 'https://reqres.in/api',
@@ -21,7 +21,7 @@ api.interceptors.response.use( // тут проверяем каждый ВХО�
     (error) => {
         if (error.response?.status === 401) {
             clearAccessToken()
-            // тут будем делать логаут
+            triggerUnauthorized()
         }
         return Promise.reject(error)
     }
